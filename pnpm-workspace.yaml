@@ -1,0 +1,16 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# pnpm 11 allowBuilds: explicit allowlist for packages permitted to run postinstall/build scripts.
+# Any unlisted package attempting a build script is silently blocked.
+# Primary pnpm-native supply chain hardening — prevents malicious postinstall payloads.
+# Age-gating for auto-updates handled by renovate.json (minimumReleaseAge: "3 days").
+allowBuilds:
+  '@nestjs/core': true
+  '@prisma/client': true
+  '@prisma/engines': true
+  bcrypt: true
+  esbuild: true
+  msgpackr-extract: true
+  prisma: true

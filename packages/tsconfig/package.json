@@ -1,0 +1,10 @@
+{
+  "name": "@ts-boilerplates/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./base.jsonc": "./base.jsonc",
+    "./node.json": "./node.json",
+    "./react.json": "./react.json"
+  }
+}
