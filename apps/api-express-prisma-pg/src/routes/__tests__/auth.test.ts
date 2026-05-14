@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { afterEach, describe, expect, it } from 'vitest';
 import { app } from '~/app.ts';
-import { cleanDb } from '~/lib/test-helpers.ts';
+import { cleanDb, createUser } from '~/lib/test-helpers.ts';
 
 afterEach(cleanDb);
 
@@ -28,5 +28,19 @@ describe('POST /api/auth/register', () => {
 
     expect(res.status).toBe(409);
     expect(res.body.error).toBeDefined();
+  });
+});
+
+describe('POST /api/auth/login', () => {
+  it('returns 200 with token on valid credentials', async () => {
+    await createUser({ email: 'login@test.com' });
+
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'login@test.com', password: 'password123' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeDefined();
+    expect(res.body.user.email).toBe('login@test.com');
   });
 });
