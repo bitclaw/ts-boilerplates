@@ -4,9 +4,25 @@ help: ## Show available targets
 
 # ── setup ─────────────────────────────────────────────────────────────────
 
+.PHONY: setup
+setup: ## Bootstrap project: copy .env.example → .env for all apps
+	@for f in apps/*/.env.example; do \
+		dest=$$(dirname $$f)/.env; \
+		if [ ! -f $$dest ]; then \
+			cp $$f $$dest; \
+			echo "created $$dest"; \
+		else \
+			echo "skip $$dest (exists)"; \
+		fi; \
+	done
+
 .PHONY: install
 install: ## Install all dependencies (frozen lockfile)
 	@pnpm install --frozen-lockfile
+
+.PHONY: generate.gap
+generate.gap: ## Generate Prisma client (GAP / PostgreSQL)
+	@pnpm --filter api-express-prisma-pg exec prisma generate
 
 .PHONY: db.up
 db.up: ## Start PostgreSQL + MySQL + Redis via Docker Compose
@@ -36,8 +52,9 @@ dev.sp: ## Start Scalable Path backend + frontend
 # ── db migrations ─────────────────────────────────────────────────────────
 
 .PHONY: migrate.gap
-migrate.gap: ## Run Prisma migrations (GAP / PostgreSQL)
+migrate.gap: ## Run Prisma migrations (GAP / PostgreSQL) + generate client
 	@pnpm --filter api-express-prisma-pg exec prisma migrate dev
+	@pnpm --filter api-express-prisma-pg exec prisma generate
 
 .PHONY: migrate.gap.reset
 migrate.gap.reset: ## Reset Prisma DB and re-run all migrations
@@ -88,4 +105,4 @@ audit: ## Security audit — fails on moderate+ vulnerabilities
 # ── ci ────────────────────────────────────────────────────────────────────
 
 .PHONY: ci
-ci: install build typecheck lint test audit ## Full CI check
+ci: setup install build typecheck lint test audit ## Full CI check
