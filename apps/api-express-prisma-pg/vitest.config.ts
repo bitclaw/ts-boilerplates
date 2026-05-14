@@ -1,13 +1,10 @@
 import path from 'node:path';
-import { loadEnv } from 'vite';
 import { defineConfig } from 'vitest/config';
-
-const env = loadEnv('test', process.cwd(), '');
 
 export default defineConfig({
   test: {
     globals: true,
-    env,
+    envFile: '.env.test',
     coverage: {
       provider: 'v8',
       reporter: ['lcov', 'text-summary'],
