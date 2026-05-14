@@ -8,7 +8,7 @@ export async function authenticate(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const header = req.headers['authorization'];
+  const header = req.headers.authorization;
   if (!header?.startsWith('Bearer ')) {
     res.status(401).json({ error: 'Missing or invalid Authorization header' });
     return;

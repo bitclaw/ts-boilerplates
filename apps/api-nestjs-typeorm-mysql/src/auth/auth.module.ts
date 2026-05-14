@@ -12,8 +12,8 @@ import { User } from './user.entity';
     TypeOrmModule.forFeature([User]),
     PassportModule,
     JwtModule.register({
-      secret: process.env['JWT_SECRET'] ?? 'dev-secret-change-in-production',
-      signOptions: { expiresIn: process.env['JWT_EXPIRES_IN'] ?? '7d' }
+      secret: process.env.JWT_SECRET ?? 'dev-secret-change-in-production',
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN ?? '7d' }
     })
   ],
   controllers: [AuthController],

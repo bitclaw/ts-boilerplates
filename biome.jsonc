@@ -13,6 +13,11 @@
       "!**/public"
     ]
   },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  },
   "formatter": {
     "enabled": false
   },

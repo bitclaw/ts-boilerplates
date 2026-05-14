@@ -11,7 +11,7 @@ export const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env['CORS_ORIGIN'] ?? 'http://localhost:5173',
+    origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
     credentials: true
   })
 );
@@ -23,7 +23,7 @@ app.use(
     legacyHeaders: false
   })
 );
-app.use(morgan(process.env['NODE_ENV'] === 'production' ? 'combined' : 'dev'));
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json());
 
 app.get('/health', (_req, res) => {
