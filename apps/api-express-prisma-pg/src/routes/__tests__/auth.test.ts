@@ -43,4 +43,17 @@ describe('POST /api/auth/login', () => {
     expect(res.body.token).toBeDefined();
     expect(res.body.user.email).toBe('login@test.com');
   });
+
+  it('returns 200 with token on valid credentials', async () => {
+    await createUser({ email: 'login@test.com' });
+
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'login@test.com', password: 'password123' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeDefined();
+    expect(res.body.user.email).toBe('login@test.com');
+    expect(res.body.user.password).toBeUndefined();
+  });
 });
