@@ -8,13 +8,23 @@ export const tasksRouter = Router();
 
 tasksRouter.use(authenticate);
 
+const taskStatus = z.enum([
+  'TODO',
+  'IN_PROGRESS',
+  'DONE'
+]);
+
 const createSchema = z.object({
   title: z.string().min(1).max(255),
   description: z.string().optional(),
-  status: z.enum(['TODO', 'IN_PROGRESS', 'DONE']).optional()
+  status: taskStatus.optional()
 });
 
 const updateSchema = createSchema.partial();
+
+const statusSchema = z.object({
+  status: taskStatus
+});
 
 tasksRouter.get('/', async (req, res) => {
   const { userId } = req as unknown as AuthRequest;
