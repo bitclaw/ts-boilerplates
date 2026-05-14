@@ -56,4 +56,15 @@ describe('POST /api/auth/login', () => {
     expect(res.body.user.email).toBe('login@test.com');
     expect(res.body.user.password).toBeUndefined();
   });
+
+  it('returns 401 on invalid credentials', async () => {
+    await createUser({ email: 'login@test.com' });
+
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'login@test.com', password: 'wrongpassword' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.error).toBeDefined();
+  });
 });
