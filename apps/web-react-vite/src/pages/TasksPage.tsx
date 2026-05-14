@@ -36,9 +36,9 @@ function TaskItem({ task }: { task: Task }) {
         onChange={e => updateTask.mutate({ id: task.id, status: e.target.value as Task['status'] })}
         className={`rounded-full px-3 py-1 text-xs font-semibold outline-none cursor-pointer ${statusStyles[task.status]}`}
       >
-        <option value="TODO">To Do</option>
-        <option value="IN_PROGRESS">In Progress</option>
-        <option value="DONE">Done</option>
+        {(Object.keys(statusLabel) as Task['status'][]).map(s => (
+          <option key={s} value={s}>{statusLabel[s]}</option>
+        ))}
       </select>
       <button
         type="button"
