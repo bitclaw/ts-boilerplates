@@ -1,6 +1,17 @@
 .PHONY: help
 help: ## Show available targets
-	@grep -E '^[a-zA-Z_.]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-24s\033[0m %s\n", $$1, $$2}'
+	@echo ""
+	@echo "\033[1mQuick Start\033[0m"
+	@echo "  1. make setup          copy .env.example → .env (all apps)"
+	@echo "  2. make db.up          start PostgreSQL + MySQL + Redis"
+	@echo "  3. make migrate.gap    Prisma migrations + generate client (GAP)"
+	@echo "     make migrate.sp     TypeORM migrations (SP)"
+	@echo "  4. make dev.gap        start GAP stack  (Express + React)"
+	@echo "     make dev.sp         start SP stack   (NestJS + React)"
+	@echo ""
+	@echo "\033[1mAll Targets\033[0m"
+	@grep -E '^[a-zA-Z_.]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
+	@echo ""
 
 # ── setup ─────────────────────────────────────────────────────────────────
 
