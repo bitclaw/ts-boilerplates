@@ -28,8 +28,8 @@ make setup
 # 3. Start databases (PostgreSQL · MySQL · Redis)
 make db.up
 
-# 4. Run migrations + generate ORM clients
-make migrate.gap   # Express / Prisma / PostgreSQL
+# 4. Run migrations + generate ORM clients + seed
+make migrate.gap   # Express / Prisma / PostgreSQL (includes seed)
 make migrate.sp    # NestJS / TypeORM / MySQL
 
 # 5. Start dev servers
@@ -61,9 +61,10 @@ make db.reset       # Recreate DB containers (data wiped)
 make dev            # Start all apps
 make dev.gap        # Start GAP stack (Express + React)
 make dev.sp         # Start SP stack (NestJS + React)
-make migrate.gap    # Prisma migrate dev + generate client
+make migrate.gap    # Prisma migrate dev + generate client + seed
 make migrate.gap.reset  # Reset Prisma DB, re-run migrations
 make generate.gap   # Prisma generate only (no migration)
+make seed.gap       # Seed GAP DB (demo@example.com / password123)
 make migrate.sp     # TypeORM migration:run
 make migrate.sp.revert  # TypeORM: revert last migration
 make build          # Build all apps

@@ -4,7 +4,7 @@ help: ## Show available targets
 	@echo "\033[1mQuick Start\033[0m"
 	@echo "  1. make setup          copy .env.example → .env (all apps)"
 	@echo "  2. make db.up          start PostgreSQL + MySQL + Redis"
-	@echo "  3. make migrate.gap    Prisma migrations + generate client (GAP)"
+	@echo "  3. make migrate.gap    Prisma migrations + generate client + seed (GAP)"
 	@echo "     make migrate.sp     TypeORM migrations (SP)"
 	@echo "  4. make dev.gap        start GAP stack  (Express + React)"
 	@echo "     make dev.sp         start SP stack   (NestJS + React)"
@@ -63,9 +63,14 @@ dev.sp: ## Start Scalable Path backend + frontend
 # ── db migrations ─────────────────────────────────────────────────────────
 
 .PHONY: migrate.gap
-migrate.gap: ## Run Prisma migrations (GAP / PostgreSQL) + generate client
+migrate.gap: ## Run Prisma migrations (GAP / PostgreSQL) + generate client + seed
 	@pnpm --filter api-express-prisma-pg exec prisma migrate dev
 	@pnpm --filter api-express-prisma-pg exec prisma generate
+	@pnpm --filter api-express-prisma-pg run db:seed
+
+.PHONY: seed.gap
+seed.gap: ## Seed GAP database (demo@example.com / password123)
+	@pnpm --filter api-express-prisma-pg run db:seed
 
 .PHONY: migrate.gap.reset
 migrate.gap.reset: ## Reset Prisma DB and re-run all migrations
