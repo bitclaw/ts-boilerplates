@@ -11,6 +11,10 @@ help: ## Show available targets
 	@echo "  5. make ci.gap         typecheck + lint + test for GAP stack only"
 	@echo "     make ci.sp          typecheck + lint + test for SP stack only"
 	@echo ""
+	@echo "\033[1mTest DB (one-time setup)\033[0m"
+	@echo "  make db.test.setup     create app_test PostgreSQL DB"
+	@echo "  make migrate.gap.test  run migrations against app_test"
+	@echo ""
 	@echo "\033[1mAll Targets\033[0m"
 	@grep -E '^[a-zA-Z_.]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
 	@echo ""
@@ -47,6 +51,15 @@ db.down: ## Stop DB containers
 
 .PHONY: db.reset
 db.reset: db.down db.up ## Recreate DB containers (data wiped)
+
+.PHONY: db.test.setup
+db.test.setup: ## Create app_test PostgreSQL database (run once after db.up)
+	@docker compose exec postgres psql -U postgres -c "CREATE DATABASE app_test;" 2>/dev/null && echo "created app_test" || echo "app_test already exists"
+
+.PHONY: migrate.gap.test
+migrate.gap.test: ## Run Prisma migrations against test DB
+	@DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app_test" \
+		pnpm --filter api-express-prisma-pg exec prisma migrate deploy
 
 # ── dev ───────────────────────────────────────────────────────────────────
 
