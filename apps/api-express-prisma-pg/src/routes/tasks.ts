@@ -70,6 +70,24 @@ tasksRouter.patch('/:id', validate(updateSchema), async (req, res) => {
   res.json({ task });
 });
 
+tasksRouter.patch('/:id/status', validate(statusSchema), async (req, res) => {
+  const { userId } = req as unknown as AuthRequest;
+  const existing = await prisma.task.findFirst({
+    where: { id: req.params.id as string, userId }
+  })
+
+  if (!existing) {
+    res.status(404).json({ error: 'Task not found' });
+  }
+
+  const task = await prisma.task.update({
+    where: { id: req.params.id as string },
+    data: {status: req.body.status}
+  })
+
+  res.json({ task });
+})
+
 tasksRouter.delete('/:id', async (req, res) => {
   const { userId } = req as unknown as AuthRequest;
   const existing = await prisma.task.findFirst({
