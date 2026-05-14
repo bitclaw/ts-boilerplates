@@ -10,24 +10,24 @@ import { User } from './user.entity';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)readonly _usersRepo: Repository<User>,
+    @InjectRepository(User) private readonly _usersRepo: Repository<User>,
     private readonly jwtService: JwtService
   ) {}
 
   async register(dto: RegisterDto) {
-    const existing = await this.usersRepo.findOne({ where: { email: dto.email } });
+    const existing = await this._usersRepo.findOne({ where: { email: dto.email } });
     if (existing) throw new ConflictException('Email already registered');
 
     const password = await bcrypt.hash(dto.password, 12);
-    const user = this.usersRepo.create({ ...dto, password });
-    const saved = await this.usersRepo.save(user);
+    const user = this._usersRepo.create({ ...dto, password });
+    const saved = await this._usersRepo.save(user);
 
     const token = this.jwtService.sign({ sub: saved.id, email: saved.email });
     return { user: { id: saved.id, email: saved.email, name: saved.name }, token };
   }
 
   async login(dto: LoginDto) {
-    const user = await this.usersRepo.findOne({ where: { email: dto.email } });
+    const user = await this._usersRepo.findOne({ where: { email: dto.email } });
     if (!user || !(await bcrypt.compare(dto.password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   async me(userId: string) {
-    const user = await this.usersRepo.findOne({
+    const user = await this._usersRepo.findOne({
       where: { id: userId },
       select: ['id', 'email', 'name', 'createdAt']
     });

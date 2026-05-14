@@ -42,6 +42,7 @@
       "correctness": {
         "recommended": true,
         "noUnsafeFinally": "error",
+        "noUnusedFunctionParameters": "off",
         "useJsxKeyInIterable": "error"
       },
       "nursery": {
