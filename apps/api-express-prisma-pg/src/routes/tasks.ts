@@ -35,7 +35,7 @@ tasksRouter.post('/', validate(createSchema), async (req, res) => {
 tasksRouter.get('/:id', async (req, res) => {
   const { userId } = req as unknown as AuthRequest;
   const task = await prisma.task.findFirst({
-    where: { id: req.params['id'], userId }
+    where: { id: req.params['id'] as string, userId }
   });
   if (!task) {
     res.status(404).json({ error: 'Task not found' });
@@ -47,14 +47,14 @@ tasksRouter.get('/:id', async (req, res) => {
 tasksRouter.patch('/:id', validate(updateSchema), async (req, res) => {
   const { userId } = req as unknown as AuthRequest;
   const existing = await prisma.task.findFirst({
-    where: { id: req.params['id'], userId }
+    where: { id: req.params['id'] as string, userId }
   });
   if (!existing) {
     res.status(404).json({ error: 'Task not found' });
     return;
   }
   const task = await prisma.task.update({
-    where: { id: req.params['id'] },
+    where: { id: req.params['id'] as string },
     data: req.body as z.infer<typeof updateSchema>
   });
   res.json({ task });
@@ -63,12 +63,12 @@ tasksRouter.patch('/:id', validate(updateSchema), async (req, res) => {
 tasksRouter.delete('/:id', async (req, res) => {
   const { userId } = req as unknown as AuthRequest;
   const existing = await prisma.task.findFirst({
-    where: { id: req.params['id'], userId }
+    where: { id: req.params['id'] as string, userId }
   });
   if (!existing) {
     res.status(404).json({ error: 'Task not found' });
     return;
   }
-  await prisma.task.delete({ where: { id: req.params['id'] } });
+  await prisma.task.delete({ where: { id: req.params['id'] as string } });
   res.status(204).send();
 });
