@@ -8,6 +8,8 @@ help: ## Show available targets
 	@echo "     make migrate.sp     TypeORM migrations (SP)"
 	@echo "  4. make dev.gap        start GAP stack  (Express + React)"
 	@echo "     make dev.sp         start SP stack   (NestJS + React)"
+	@echo "  5. make ci.gap         typecheck + lint + test for GAP stack only"
+	@echo "     make ci.sp          typecheck + lint + test for SP stack only"
 	@echo ""
 	@echo "\033[1mAll Targets\033[0m"
 	@grep -E '^[a-zA-Z_.]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
@@ -94,21 +96,53 @@ build: ## Build all apps (turbo)
 typecheck: ## Type-check all apps (turbo)
 	@pnpm turbo run typecheck
 
+.PHONY: typecheck.gap
+typecheck.gap: ## Type-check GAP stack only (Express + React)
+	@pnpm turbo run typecheck --filter=api-express-prisma-pg --filter=web-react-vite
+
+.PHONY: typecheck.sp
+typecheck.sp: ## Type-check SP stack only (NestJS + React)
+	@pnpm turbo run typecheck --filter=api-nestjs-typeorm-mysql --filter=web-react-vite
+
 # ── lint / fix ────────────────────────────────────────────────────────────
 
 .PHONY: lint
 lint: ## Biome lint all (report only)
 	@pnpm turbo run lint
 
+.PHONY: lint.gap
+lint.gap: ## Biome lint GAP stack only
+	@pnpm turbo run lint --filter=api-express-prisma-pg --filter=web-react-vite
+
+.PHONY: lint.sp
+lint.sp: ## Biome lint SP stack only
+	@pnpm turbo run lint --filter=api-nestjs-typeorm-mysql --filter=web-react-vite
+
 .PHONY: fix
 fix: ## Biome auto-fix all (lint + format)
 	@pnpm biome check --write .
+
+.PHONY: fix.gap
+fix.gap: ## Biome auto-fix GAP stack only
+	@pnpm biome check --write apps/api-express-prisma-pg apps/web-react-vite
+
+.PHONY: fix.sp
+fix.sp: ## Biome auto-fix SP stack only
+	@pnpm biome check --write apps/api-nestjs-typeorm-mysql apps/web-react-vite
 
 # ── test ──────────────────────────────────────────────────────────────────
 
 .PHONY: test
 test: ## Run all tests (turbo)
 	@pnpm turbo run test
+
+.PHONY: test.gap
+test.gap: ## Run tests for GAP stack only
+	@pnpm turbo run test --filter=api-express-prisma-pg --filter=web-react-vite
+
+.PHONY: test.sp
+test.sp: ## Run tests for SP stack only
+	@pnpm turbo run test --filter=api-nestjs-typeorm-mysql --filter=web-react-vite
 
 .PHONY: test.coverage
 test.coverage: ## Run all tests with coverage (turbo)
@@ -122,3 +156,9 @@ audit: ## Security audit — fails on moderate+ vulnerabilities
 
 .PHONY: ci
 ci: setup install build typecheck lint test audit ## Full CI check
+
+.PHONY: ci.gap
+ci.gap: typecheck.gap lint.gap test.gap ## CI check for GAP stack only (Express + React)
+
+.PHONY: ci.sp
+ci.sp: typecheck.sp lint.sp test.sp ## CI check for SP stack only (NestJS + React)
