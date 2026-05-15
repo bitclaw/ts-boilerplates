@@ -12,9 +12,9 @@ import {
   UseGuards
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import type { BlogsService } from './blogs.service';
-import type { CreateBlogDto } from './dto/create-blog.dto';
-import type { UpdateBlogDto } from './dto/update-blog.dto';
+import { BlogsService } from './blogs.service';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Controller('blogs')
 @UseGuards(JwtAuthGuard)

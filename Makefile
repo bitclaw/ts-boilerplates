@@ -61,6 +61,14 @@ migrate.gap.test: ## Run Prisma migrations against test DB
 	@DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app_test" \
 		pnpm --filter api-express-prisma-pg exec prisma migrate deploy
 
+.PHONY: db.test.setup.sp
+db.test.setup.sp: ## Create app_test MySQL DB and grant access to app user (run once after db.up)
+	@docker compose exec mysql mysql -u root -proot -e \
+	  "CREATE DATABASE IF NOT EXISTS app_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; \
+	   GRANT ALL PRIVILEGES ON app_test.* TO 'app'@'%'; \
+	   FLUSH PRIVILEGES;" \
+	  2>/dev/null && echo "app_test ready" || echo "error: check db.up"
+
 # ── dev ───────────────────────────────────────────────────────────────────
 
 .PHONY: dev

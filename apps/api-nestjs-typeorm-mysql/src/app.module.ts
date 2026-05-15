@@ -23,7 +23,7 @@ import { TasksModule } from './tasks/tasks.module';
       password: process.env.DB_PASSWORD ?? 'app',
       database: process.env.DB_DATABASE ?? 'app_dev',
       entities: [User, Task, Product, Blog],
-      synchronize: process.env.NODE_ENV === 'development'
+      synchronize: process.env.NODE_ENV !== 'production'
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
     BullModule.forRoot({

@@ -9,9 +9,9 @@ import {
   Post,
   Query
 } from '@nestjs/common';
-import type { CreateProductDto } from './dto/create-product.dto';
-import type { UpdateProductDto } from './dto/update-product.dto';
-import type { ProductsService } from './products.service';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductsService } from './products.service';
 
 @Controller('products')
 export class ProductsController {
