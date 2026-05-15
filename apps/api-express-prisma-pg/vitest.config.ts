@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     globals: true,
     envFile: '.env.test',
+    fileParallelism: false,
     coverage: {
       provider: 'v8',
       reporter: ['lcov', 'text-summary'],
