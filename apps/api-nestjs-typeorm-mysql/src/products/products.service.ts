@@ -11,9 +11,65 @@ export class ProductsService {
     @InjectRepository(Product) private readonly _repo: Repository<Product>
   ) {}
 
+  // ── sorting algorithm (testable) ─────────────────────────────────────────
+
   sortByPrice(products: Product[]): Product[] {
     return [...products].sort((a, b) => Number(a.price) - Number(b.price));
   }
+
+  // ── GAP exercise endpoints ────────────────────────────────────────────────
+
+  async findAllByTitle(): Promise<Product[]> {
+    const products = await this._repo.find();
+    return [...products].sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async findCategories(): Promise<string[]> {
+    const products = await this._repo.find({ select: ['category'] });
+    return [...new Set(products.map(p => p.category).filter(Boolean))];
+  }
+
+  async findTop10(): Promise<Product[]> {
+    const products = await this._repo.find();
+    return [...products]
+      .sort((a, b) => Number(b.price) - Number(a.price))
+      .slice(0, 10);
+  }
+
+  async findTopCategory(): Promise<{ category: string; avgRate: number; totalCount: number }> {
+    const products = await this._repo.find();
+
+    const grouped = products.reduce<Record<string, { rate: number; count: number; total: number }>>(
+      (acc, p) => {
+        if (!p.category) return acc;
+        if (!acc[p.category]) acc[p.category] = { rate: 0, count: 0, total: 0 };
+        acc[p.category].rate += Number(p.ratingRate ?? 0);
+        acc[p.category].count += Number(p.ratingCount ?? 0);
+        acc[p.category].total += 1;
+        return acc;
+      },
+      {}
+    );
+
+    const summary = Object.entries(grouped).map(([category, data]) => ({
+      category,
+      avgRate: parseFloat((data.rate / data.total).toFixed(2)),
+      totalCount: data.count
+    }));
+
+    return summary.reduce((best, current) =>
+      current.avgRate > best.avgRate ? current : best
+    );
+  }
+
+  async findPriceRange(): Promise<{ cheapest: Product; expensive: Product }> {
+    const products = await this._repo.find();
+    const expensive = products.reduce((max, p) => (Number(p.price) > Number(max.price) ? p : max));
+    const cheapest = products.reduce((min, p) => (Number(p.price) < Number(min.price) ? p : min));
+    return { cheapest, expensive };
+  }
+
+  // ── CRUD ─────────────────────────────────────────────────────────────────
 
   async findAll(sort?: string, page = 1, limit = 20): Promise<{ data: Product[]; meta: object }> {
     const [items, total] = await this._repo.findAndCount({

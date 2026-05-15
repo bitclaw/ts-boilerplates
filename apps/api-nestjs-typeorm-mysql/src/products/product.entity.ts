@@ -11,6 +11,15 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
+  @Column({ nullable: true })
+  category: string;
+
+  @Column({ type: 'decimal', precision: 3, scale: 1, nullable: true })
+  ratingRate: number;
+
+  @Column({ nullable: true })
+  ratingCount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
