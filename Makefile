@@ -175,3 +175,25 @@ ci.gap: typecheck.gap lint.gap test.gap ## CI check for GAP stack only (Express 
 
 .PHONY: ci.sp
 ci.sp: typecheck.sp lint.sp test.sp ## CI check for SP stack only (NestJS + React)
+
+# ── NestJS scaffold (SP stack) ────────────────────────────────────────────
+
+.PHONY: gen.module.sp
+gen.module.sp: ## Generate NestJS module (SP): make gen.module.sp NAME=blogs
+	@pnpm --filter api-nestjs-typeorm-mysql exec nest g module $(NAME) --no-spec
+
+.PHONY: gen.controller.sp
+gen.controller.sp: ## Generate NestJS controller (SP): make gen.controller.sp NAME=blogs
+	@pnpm --filter api-nestjs-typeorm-mysql exec nest g controller $(NAME) --no-spec
+
+.PHONY: gen.service.sp
+gen.service.sp: ## Generate NestJS service (SP): make gen.service.sp NAME=blogs
+	@pnpm --filter api-nestjs-typeorm-mysql exec nest g service $(NAME) --no-spec
+
+.PHONY: gen.resource.sp
+gen.resource.sp: ## Generate full NestJS CRUD resource (SP): make gen.resource.sp NAME=blogs
+	@pnpm --filter api-nestjs-typeorm-mysql exec nest g resource $(NAME) --no-spec
+
+.PHONY: gen.guard.sp
+gen.guard.sp: ## Generate NestJS guard (SP): make gen.guard.sp NAME=jwt-auth
+	@pnpm --filter api-nestjs-typeorm-mysql exec nest g guard $(NAME) --no-spec
